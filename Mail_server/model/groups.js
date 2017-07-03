@@ -1,7 +1,7 @@
 var mongoose = require('mongoose');
 
 // connect to mongodb and create/use database
-mongoose.createConnection('mongodb://localhost:27017/MailBox');
+mongoose.createConnection('mongodb://192.168.99.100:27017/MailBox');
 // mongoose.connect('mongodb://192.168.99.100:52025/MailBox');
 
 var Groupschema = mongoose.Schema({ 
