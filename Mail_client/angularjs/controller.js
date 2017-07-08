@@ -17,7 +17,7 @@ angular.module('Mail.controller', ['ngRoute', 'textAngular', 'Mail.Service', 'ng
         }
     })
 
-    .controller('LoginCtrl', function ($rootScope, $scope) {
+    .controller('LoginCtrl', function ($rootScope, $scope, DataContent, ngDialog) {
         //google login
         //logout
         $scope.$on('event:google-plus-signin-success', function (event, authResult) {
@@ -30,17 +30,49 @@ angular.module('Mail.controller', ['ngRoute', 'textAngular', 'Mail.Service', 'ng
             angular.forEach($scope.resultg, function (item) {
                 userg = authResult.w3.U3;
             });
-            password = "123456";
-            window.localStorage.setItem('auth', userg);
-            window.location.href = '#/home';
-            window.location.reload(true);
+
+            if ($scope.resultg) {
+                DataContent.get_user(authResult.w3.U3).then(function (response) {
+                    if (response.data.error === false) {
+                        window.localStorage.setItem('auth', JSON.stringify(response.data.profile));
+                        window.location.href = '#/home';
+                        window.location.reload(true);
+                    } else {
+                        DataContent.create_user(authResult.w3.U3, authResult.w3.ig, null, 'google').then(function (response) {
+                            if (response.data.error === false) {
+                                DataContent.get_user(authResult.w3.U3).then(function (response) {
+                                    if (response.data.error === false) {
+                                        window.localStorage.setItem('auth', JSON.stringify(response.data.profile));
+                                        window.location.href = '#/home';
+                                        window.location.reload(true);
+                                    }
+                                });
+                            } else {
+                                ngDialog.open({
+                                    template: '<h2 style="margin-top:10px"><center>' + response.data.message + '</center></h2>',
+                                    plain: true,
+                                    showClose: true,
+                                });
+                            }
+                        });
+                    }
+                });
+            }
+
+
+            // window.localStorage.setItem('auth', userg);
+            // window.location.href = '#/home';
+            // window.location.reload(true);
         });
     })
 
     .controller('MailCtrl', function ($rootScope, $scope, $routeParams, DataContent) {
-        $scope.auth = window.localStorage.getItem('auth');
+        $scope.auth = JSON.parse(window.localStorage.getItem('auth'));
         $scope.back = function () {
             window.location.href = '#/home';
+        }
+        $scope.go_signature = function(){
+         window.location.href = '#/signature';   
         }
         DataContent.Get_Mail_By_Id($routeParams.id).then(function (response) {
             $scope.dataResult = response.data.mail;
@@ -48,11 +80,15 @@ angular.module('Mail.controller', ['ngRoute', 'textAngular', 'Mail.Service', 'ng
     })
 
     .controller('GroupsCtrl', function ($scope, $filter, $routeParams, ngDialog, DataContent) {
-        $scope.auth = window.localStorage.getItem('auth');
+        $scope.auth = JSON.parse(window.localStorage.getItem('auth'));
         $scope._group_name;
         $scope._group_email;
         $scope._group_update_name;
-      
+
+        $scope.go_signature = function(){
+         window.location.href = '#/signature';   
+        }
+
         //get groups from server
         get_all_groups = function () {
             DataContent.Get_Groups().then(function (response) {
@@ -159,14 +195,14 @@ angular.module('Mail.controller', ['ngRoute', 'textAngular', 'Mail.Service', 'ng
         }
 
         //delete group by id
-        $scope.delete_group = function(id){
+        $scope.delete_group = function (id) {
 
             ngDialog.openConfirm({
                 template: '<div class="ngdialog-message">' +
                 ' <center> <h3 class="confirmation-title">You want to delete this group ?</h3> </center> <br/>' +
                 '    <div class="ngdialog-buttons" style="padding:0">' +
                 '      <button type="button" class="ngdialog-button green darken-4" style="color:#fff; background:#0E7700" ng-click="confirm(confirmValue)">Okay</button>' +
-                '      <button type="button" class="ngdialog-button green darken-4" style="color:#fff; background:#292B2C" ng-click="closeThisDialog()">Cancel</button> '+
+                '      <button type="button" class="ngdialog-button green darken-4" style="color:#fff; background:#292B2C" ng-click="closeThisDialog()">Cancel</button> ' +
                 '    </div>' +
                 '</div>',
                 plain: true,
@@ -174,10 +210,10 @@ angular.module('Mail.controller', ['ngRoute', 'textAngular', 'Mail.Service', 'ng
             }).then(function (confirm) {
                 DataContent.Delete_group(id).then(function (response) {
                     ngDialog.open({
-                            template: '<h2 style="margin-top:10px"><center>'+response.data.message+'</center></h2>',
-                            plain: true,
-                            showClose: true,
-                        });
+                        template: '<h2 style="margin-top:10px"><center>' + response.data.message + '</center></h2>',
+                        plain: true,
+                        showClose: true,
+                    });
                     get_all_groups();
                 });
 
@@ -187,9 +223,12 @@ angular.module('Mail.controller', ['ngRoute', 'textAngular', 'Mail.Service', 'ng
     })
 
     .controller('ComposeCtrl', function ($rootScope, $q, $http, $scope, $filter, md5, fileUpload, ngDialog, DataContent) {
-        $scope.auth = window.localStorage.getItem('auth');
+        $scope.auth = JSON.parse(window.localStorage.getItem('auth'));
         $scope.Compose = true;
 
+        $scope.go_signature = function(){
+         window.location.href = '#/signature';   
+        }
         $scope.go_backcompose = function () {
             window.scrollTo(0, 0);
             $scope.Compose = false;
@@ -245,7 +284,7 @@ angular.module('Mail.controller', ['ngRoute', 'textAngular', 'Mail.Service', 'ng
                 if ($scope.array_file === undefined) {
                     $scope.array_file = null;
                 }
-                fileUpload.uploadFileToServer($scope.fileId, $scope.auth, $scope.tags_2, data.subject, data.content, $scope.array_file, $scope.uploadTime, 0, 0).then(function (response) {
+                fileUpload.uploadFileToServer($scope.fileId, $scope.auth[0].username, $scope.tags_2, data.subject, data.content, $scope.array_file, $scope.auth[0].signature, $scope.uploadTime, 0, 0).then(function (response) {
                     $scope.result = response.data;
                     if ($scope.result.status === true) {
 
@@ -271,10 +310,53 @@ angular.module('Mail.controller', ['ngRoute', 'textAngular', 'Mail.Service', 'ng
 
     })
 
+    .controller('SignatureCtrl', function($rootScope, $scope, $filter, $http, DataContent, ngDialog){
+        $scope.auth = JSON.parse(window.localStorage.getItem('auth'));
+        $scope.Compose = true;
+
+        $scope.go_backcompose = function () {
+            window.scrollTo(0, 0);
+            $scope.Compose = false;
+            window.location.href = '#/home';
+        }
+
+        $scope._backcompose = function () {
+            window.scrollTo(0, 0);
+            $scope.Compose = false;
+            window.location.href = '#/home';
+        }
+
+        $scope.save = function () {
+            DataContent.update_signature($scope.auth[0].username, $scope.auth[0].signature).then(function (response) {
+                if (response.data.error === false) {
+                    $scope.auth = response.data.profile;
+                    localStorage.removeItem("auth");
+                    window.localStorage.setItem('auth', JSON.stringify(response.data.profile));
+                    ngDialog.open({
+                        template: '<h2 style="margin-top:10px"><center>Signature update success</center></h2>',
+                        plain: true,
+                        showClose: true,
+                    });
+                } else {
+                    ngDialog.open({
+                        template: '<h2 style="margin-top:10px"><center>' + response.data.message + '</center></h2>',
+                        plain: true,
+                        showClose: true,
+                    });
+                }
+            });
+        }
+
+
+    })
+
     .controller('HomeCtrl', function ($rootScope, $scope, $filter, $http, Upload, fileUpload, md5, DataContent) {
-        $scope.auth = window.localStorage.getItem('auth');
+        $scope.auth = JSON.parse(window.localStorage.getItem('auth'));
         var date = new Date();
 
+        $scope.go_signature = function(){
+         window.location.href = '#/signature';   
+        }
         $scope.logout = function () {
             window.localStorage.clear();
             window.location.reload(true);

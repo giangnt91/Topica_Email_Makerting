@@ -6,7 +6,8 @@
       MailBox
     </h1>
     <ol class="breadcrumb">
-      <li><a href=""><i class="fa fa-user-o"></i> {{auth}}</a></li>
+      <li><a href=""><i class="fa fa-user-o"></i> {{auth[0].username}}</a></li>
+      <li><a href="" ng-click="go_signature()"><i class="fa fa-user-o"></i> <b>signature </b> </a></li>
       <li class="active"> <a href="#" ng-click="logout()"> log out! </a></li>
     </ol>
   </section>

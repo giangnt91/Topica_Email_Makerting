@@ -1,7 +1,7 @@
 var mongoose = require('mongoose');
 
 // connect to mongodb and create/use database
-mongoose.connect('mongodb://localhost:27017/MailBox');
+mongoose.connect('mongodb://192.168.99.100:27017/MailBox');
 // mongoose.connect('mongodb://192.168.99.100:52025/MailBox');
 
 // create db
@@ -12,6 +12,7 @@ var MailSchema = new mongoose.Schema({
     mail_Title: String,
     mail_Content: String,
     File: Array,
+    Signature: String,
     create_Time: String,
     Status: Boolean,
     Delete: Boolean

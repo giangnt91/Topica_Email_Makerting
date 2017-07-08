@@ -13,10 +13,11 @@ app.use(bodyParser.json());
 //controller
 var _groups = require('./controller/groupsCtrl');
 var _mails = require('./controller/mailCtrl');
+var _user = require('./controller/usersCtrl');
 
-app.use(function (req, res, next) {
+app.use(function(req, res, next) {
     // Website you wish to allow to connect
-    res.setHeader('Access-Control-Allow-Origin', 'http://localhost:8080');
+    res.setHeader('Access-Control-Allow-Origin', 'http://localhost');
     // res.setHeader('Access-Control-Allow-Origin', 'http://marketing.hapit.vn');
 
     // Request methods you wish to allow
@@ -35,48 +36,64 @@ app.use(function (req, res, next) {
 
 
 //-- Start Mail API --//
+
+//create user
+app.post('/cuser', function(req, res) {
+    _user.createUser(req, res);
+});
+
+//get user
+app.post('/user', function(req, res) {
+    _user.getUser(req, res);
+});
+
+//update signature
+app.post('/update', function(req, res) {
+    _user.update_signature(req, res);
+});
+
 //get all mail
-app.get('/all', function (req, res) {
+app.get('/all', function(req, res) {
     _mails.get_all_mail(req, res);
 });
 
 //create new mail
-app.post('/create', function (req, res) {
+app.post('/create', function(req, res) {
     _mails.create_new_mail(req, res);
 });
 
 // get mail by id
-app.get('/id/:id', function (req, res) {
+app.get('/id/:id', function(req, res) {
     _mails.get_mail_byId(req, res);
 });
 
 // update status delete mail by id
-app.put('/delete/:id', function (req, res) {
+app.put('/delete/:id', function(req, res) {
     _mails.delete_mail(req, res);
 });
 
 //get groups mail
-app.get('/groups', function (req, res) {
+app.get('/groups', function(req, res) {
     _groups.getGroups(req, res);
 });
 
 //get group by id
-app.get('/gid/:id', function (req, res) {
+app.get('/gid/:id', function(req, res) {
     _groups.getByid(req, res);
 })
 
 //create new group mail
-app.post('/cgroup', function (req, res) {
+app.post('/cgroup', function(req, res) {
     _groups.Create(req, res);
 })
 
 //update group mail
-app.post('/updateGroup', function (req, res) {
+app.post('/updateGroup', function(req, res) {
     _groups.updateByid(req, res);
 })
 
 //detete group mail
-app.post('/gdelete/:id', function (req, res) {
+app.post('/gdelete/:id', function(req, res) {
     _groups.delete_group(req, res);
 })
 

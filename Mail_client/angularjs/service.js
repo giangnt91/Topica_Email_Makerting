@@ -5,7 +5,7 @@ angular.module('Mail.Service', [])
         var parameter;
         var url;
         return {
-            uploadFileToServer: function (fileId, mailAuth, mailTo, mailTitle, mailContent, file, createTime, status, deletes) {
+            uploadFileToServer: function (fileId, mailAuth, mailTo, mailTitle, mailContent, file, signature, createTime, status, deletes) {
                 url = api_gateway_url + 'create/';
                 return $http({
                     method: 'POST',
@@ -18,7 +18,7 @@ angular.module('Mail.Service', [])
                             str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
                         return str.join("&");
                     },
-                    data: { file_Id: fileId, mail_Auth: mailAuth, mail_To: mailTo, mail_Title: mailTitle, mail_Content: mailContent, File: file, Time: createTime, Status: status, Delete: deletes }
+                    data: { file_Id: fileId, mail_Auth: mailAuth, mail_To: mailTo, mail_Title: mailTitle, mail_Content: mailContent, File: file, signature: signature, Time: createTime, Status: status, Delete: deletes }
                 }).success(function () { });
             }
         }
@@ -28,6 +28,54 @@ angular.module('Mail.Service', [])
         // var api_gateway_url = 'http://210.211.116.79:3000/';
         var parameter;
         return {
+            create_user: function (_username, _fullname, _signature, _provider) {
+                url = api_gateway_url + 'cuser/';
+                return $http({
+                    method: 'POST',
+                    dataType: 'jsonp',
+                    url: url,
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    transformRequest: function (obj) {
+                        var str = [];
+                        for (var p in obj)
+                            str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
+                        return str.join("&");
+                    },
+                    data: { username: _username, fullname: _fullname, signature: _signature, provider: _provider }
+                }).success(function () { });
+            },
+            get_user: function (_username) {
+                url = api_gateway_url + 'user/';
+                return $http({
+                    method: 'POST',
+                    dataType: 'jsonp',
+                    url: url,
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    transformRequest: function (obj) {
+                        var str = [];
+                        for (var p in obj)
+                            str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
+                        return str.join("&");
+                    },
+                    data: { username: _username }
+                }).success(function () { });
+            },
+            update_signature: function (_username, _signature) {
+                url = api_gateway_url + 'update/';
+                return $http({
+                    method: 'POST',
+                    dataType: 'jsonp',
+                    url: url,
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    transformRequest: function (obj) {
+                        var str = [];
+                        for (var p in obj)
+                            str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
+                        return str.join("&");
+                    },
+                    data: { username: _username, signature: _signature }
+                }).success(function () { });
+            },
             Get_All_Mail: function () {
                 url = api_gateway_url + 'all/';
                 return $http.get(url);
@@ -73,10 +121,10 @@ angular.module('Mail.Service', [])
                             str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
                         return str.join("&");
                     },
-                    data: {_id: id, Name: Name, Groups: Groups, Total: Total, create_Time: create_Time }
+                    data: { _id: id, Name: Name, Groups: Groups, Total: Total, create_Time: create_Time }
                 }).success(function () { });
             },
-            Delete_group: function(id){
+            Delete_group: function (id) {
                 url = api_gateway_url + 'gdelete/';
                 return $http.post(url + id);
             }
