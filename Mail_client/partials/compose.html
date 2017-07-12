@@ -1,24 +1,15 @@
  <!-- Content Wrapper. Contains page content -->
-  <div class="content-wrapper" style="margin-left:0">
+  <div class="wrapper" style="box-shadow:none">
     <!-- Content Header (Page header) -->
-    <section class="content-header">
-      <h1>
-        Mailbox
-      </h1>
-      <ol class="breadcrumb">
-        <li><a href=""><i class="fa fa-user-o"></i> {{auth[0].username}}</a></li>
-        <li><a href="" ng-click="go_signature()"><i class="fa fa-user-o"></i> <b>signature </b> </a></li>
-        <li class="active"> <a href="#" ng-click="logout()"> log out! </a></li>
-      </ol>
-    </section>
+    <div ng-include=" 'partials/header.html' "></div>
 
     <!-- Main content -->
     <section class="content">
       <div class="row">
         <div ng-include=" 'partials/leftmenu.html' "></div>
         <!-- /.col -->
-        <div class="col-md-10" style="margin-bottom:210px">
-          <div class="box box-primary">
+        <div class="col-md-10">
+          <div class="box box-primary" style="margin-bottom:0; min-height:550px">
             <div class="box-header with-border">
               <h3 class="box-title">New Mail</h3>
             </div>
@@ -29,29 +20,30 @@
                 <tags-input ng-model="tags"></tags-input>
               </div>
               <div class="form-group">
-                <input class="form-control" placeholder="Subject:" ng-model="data.subject">
+                <input class="form-control" placeholder="Subject" ng-model="data.subject">
               </div>
               <div class="form-group">
                 <text-angular ng-model="data.content">
                  
                 </text-angular>
               </div>
-
               <iframe width="0" height="0" border="0" name="dummyframe" id="dummyframe" hidden></iframe>
                 <form action="upload.php" target="dummyframe" method="post" enctype="multipart/form-data">
                   <input type="file" name="fileToUpload[]" ngf-select="onFileSelect($files)" onchange="this.form.submit()" id="fileToUpload" multiple>
-                  <input type="text" id="auth" name="auth" value="{{auth}}" hidden>
+                  <input type="text" id="auth" name="auth" value="{{auth[0].username}}" hidden> 
+                  <input type="text" id="time" name="time" value="{{time}}" hidden>
                 </form>
               
               </div>
             </div>
             <!-- /.box-body -->
-            <div class="box-footer">
+            <div class="box-footer" style="">
               <div class="pull-right">
+                <button type="reset" class="btn btn-default" ng-click="go_backcompose()" style="margin-right:10px"><i class="fa fa-times"></i> Discard</button>
                 <!--<button type="button" class="btn btn-default"><i class="fa fa-pencil"></i> Draft</button>-->
-                <button type="submit" class="btn btn-primary" ng-click="_send_mail(data)"><i class="fa fa-envelope-o"></i> Send</button>
+                <button type="submit" class="btn btn-primary" ng-click="_send_mail(data)" style="background: #821018; border: none"><i class="fa fa-envelope-o"></i> Send</button>
               </div>
-              <button type="reset" class="btn btn-default" ng-click="_backcompose()"><i class="fa fa-times"></i> Discard</button>
+              
             </div>
             <!-- /.box-footer -->
           </div>

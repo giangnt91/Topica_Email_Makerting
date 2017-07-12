@@ -1,16 +1,7 @@
 <!-- Content Wrapper. Contains page content -->
-<div class="content-wrapper" style="margin-left:0">
+<div class="wrapper" style="box-shadow:none">
   <!-- Content Header (Page header) -->
-  <section class="content-header">
-    <h1>
-      MailBox
-    </h1>
-    <ol class="breadcrumb">
-      <li><a href=""><i class="fa fa-user-o"></i> {{auth[0].username}}</a></li>
-      <li><a href="" ng-click="go_signature()"><i class="fa fa-user-o"></i> <b>signature </b> </a></li>
-      <li class="active"> <a href="#" ng-click="logout()"> log out! </a></li>
-    </ol>
-  </section>
+  <div ng-include=" 'partials/header.html' "></div>
 
   <!-- Main content -->
   <section class="content">
@@ -19,23 +10,18 @@
 
       <!-- /.col -->
       <div class="col-md-10">
-        <div class="box box-primary" style="min-height:580px">
+        <div class="box box-primary" style="min-height:550px">
           <div class="box-header with-border">
             <a style="cursor:pointer" ng-click="back()">
               <h3 class="box-title"> <i class="fa fa-chevron-left" style="font-size:13px"></i> Back</h3>
             </a>
-
-            <!--<div class="box-tools pull-right">
-                <a href="#" class="btn btn-box-tool" data-toggle="tooltip" title="Previous"><i class="fa fa-chevron-left"></i></a>
-                <a href="#" class="btn btn-box-tool" data-toggle="tooltip" title="Next"><i class="fa fa-chevron-right"></i></a>
-              </div>-->
           </div>
           <!-- /.box-header -->
           <div class="box-body no-padding">
             <div class="mailbox-read-info">
-              <h3><b>{{dataResult.mail_Title}}</b></h3>
-              <h5>From: <a>{{dataResult.mail_Auth}}</a>
-                <span class="mailbox-read-time pull-right">{{dataResult.create_Time}}</span></h5>
+              <h3 style="color: #821018"><b>{{dataResult.mail_Title}}</b></h3>
+              <h5><a>{{dataResult.mail_Auth}}</a>
+                <span class="mailbox-read-time pull-right" style="font-size:14px">{{dataResult.create_Time}}</span></h5>
               <h5 style="margin-top:5px">
                 To:
                 <span ng-repeat="group in dataResult.mail_To">
@@ -44,18 +30,6 @@
               </h5>
             </div>
             <!-- /.mailbox-read-info -->
-            <!--<div class="mailbox-controls with-border text-center">
-              <div class="btn-group">
-                <button type="button" class="btn btn-default btn-sm" data-toggle="tooltip" data-container="body" title="Delete">
-                    <i class="fa fa-trash-o"></i></button>
-                <button type="button" class="btn btn-default btn-sm" data-toggle="tooltip" data-container="body" title="Reply">
-                    <i class="fa fa-reply"></i></button>
-                <button type="button" class="btn btn-default btn-sm" data-toggle="tooltip" data-container="body" title="Forward">
-                    <i class="fa fa-share"></i></button>
-              </div>
-              <button type="button" class="btn btn-default btn-sm" data-toggle="tooltip" title="Print">
-                  <i class="fa fa-print"></i></button>
-            </div>-->
             <!-- /.mailbox-controls -->
             <div class="mailbox-read-message" ng-bind-html="dataResult.mail_Content">
             </div>
@@ -63,29 +37,17 @@
           </div>
           <!-- /.box-body -->
           <div class="box-footer" ng-show="dataResult.File.length > 0">
-            <ul class="mailbox-attachments clearfix" ng-repeat="content in dataResult.File">
+            <ul class="mailbox-attachments clearfix" ng-repeat="content in dataResult.File" style="display: inline-flex;">
               <li>
                 <span class="mailbox-attachment-icon"><i class="fa fa-file-o"></i></span>
 
-                <div class="mailbox-attachment-info">
+                <div class="mailbox-attachment-info crop">
                   <a href="" class="mailbox-attachment-name"><i class="fa fa-paperclip"></i> {{content.File_Name}}</a>
-                  <!--<span class="mailbox-attachment-size">
-                          1,245 KB
-                          <a download="{{content.File_Name}}" ng-href="http://localhost:8080/DEV/mailbox/{{content.File_Url}}" class="btn btn-default btn-xs pull-right"><i class="fa fa-cloud-download"></i></a>
-                        </span>-->
                 </div>
               </li>
             </ul>
           </div>
           <!-- /.box-footer -->
-          <!--<div class="box-footer">
-            <div class="pull-right">
-              <button type="button" class="btn btn-default"><i class="fa fa-reply"></i> Reply</button>
-              <button type="button" class="btn btn-default"><i class="fa fa-share"></i> Forward</button>
-            </div>
-            <button type="button" class="btn btn-default"><i class="fa fa-trash-o"></i> Delete</button>
-            <button type="button" class="btn btn-default"><i class="fa fa-print"></i> Print</button>
-          </div>-->
           <!-- /.box-footer -->
         </div>
         <!-- /. box -->

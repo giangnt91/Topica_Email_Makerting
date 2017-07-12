@@ -1,4 +1,4 @@
-angular.module('Mail.controller', ['ngRoute', 'textAngular', 'Mail.Service', 'ngFileUpload', 'directive.g+signin', 'angular-md5', 'ngDialog', 'ngTagsInput'])
+angular.module('Mail.controller', ['ngRoute', 'angular.filter', 'angularSpectrumColorpicker', 'textAngular', 'ui.bootstrap.dropdownToggle', 'Mail.Service', 'ngFileUpload', 'directive.g+signin', 'angular-md5', 'ngDialog', 'ngTagsInput'])
     .directive('customOnChange', function () {
         return {
             restrict: 'A',
@@ -16,6 +16,8 @@ angular.module('Mail.controller', ['ngRoute', 'textAngular', 'Mail.Service', 'ng
             return input.slice(start);
         }
     })
+
+    
 
     .controller('LoginCtrl', function ($rootScope, $scope, DataContent, ngDialog) {
         //google login
@@ -87,6 +89,22 @@ angular.module('Mail.controller', ['ngRoute', 'textAngular', 'Mail.Service', 'ng
 
         $scope.go_signature = function(){
          window.location.href = '#/signature';   
+        }
+
+        $scope.paste = function (event) {
+            event.preventDefault();
+            $scope._group_email = event.originalEvent.clipboardData.getData('text/plain').split(',');
+        }
+
+        $scope.paste_detail = function (event) {
+            event.preventDefault();
+            var tmp = $scope.detail_mails;
+            var tmp_paste = event.originalEvent.clipboardData.getData('text/plain').split(',');
+            
+            for(var i=0; i<tmp.length; i++){
+                tmp_paste.push(tmp[i].text);
+            }
+            $scope.detail_mails = tmp_paste;
         }
 
         //get groups from server
@@ -237,6 +255,7 @@ angular.module('Mail.controller', ['ngRoute', 'textAngular', 'Mail.Service', 'ng
         }
 
         DataContent.Get_Groups().then(function (response) {
+            $scope.time = $filter('date')(new Date(), 'yyyy-MM-dd HH:mm:ss');
             var groups_length = response.data.groups.length;
             var groups = response.data.groups;
             //    console.log($scope._tags)
@@ -254,10 +273,15 @@ angular.module('Mail.controller', ['ngRoute', 'textAngular', 'Mail.Service', 'ng
 
         var tmp = [];
         $scope.onFileSelect = function ($files) {
-            var time = $filter('date')(new Date(), 'yyyy-MM-dd HH:mm:ss');
-            var newname = md5.createHash($scope.auth + time);
+            var newname = md5.createHash($scope.auth[0].username + $scope.time);
+            
+            
             $scope.filesize = true;
             for (var i = 0; i < $files.length; i++) {
+                //lấy tên file không có đuôi file
+                var new_file_name = $files[i].name.replace(/\.[^/.]+$/, "");
+                //lấy đuôi file không lấy tên file
+                var file_type = $files[i].name.split('.').pop();
                 if ($files[i].size > 5242880) {
                     document.getElementById('fileToUpload').value = null;
                     alert("Sorry, your file is too large.");
@@ -266,7 +290,8 @@ angular.module('Mail.controller', ['ngRoute', 'textAngular', 'Mail.Service', 'ng
                 else
                     tmp.push({
                         File_Name: $files[i].name,
-                        File_Url: 'file/upload/' + $files[i].name + newname
+                        // File_Url: 'file/upload/' + $files[i].name + newname
+                        File_Url: new_file_name + '-' + newname + '.' + file_type
                     })
                 $scope.array_file = JSON.stringify(tmp);
             }
@@ -400,7 +425,6 @@ angular.module('Mail.controller', ['ngRoute', 'textAngular', 'Mail.Service', 'ng
             });
         }
         $scope.reloadData();
-
     });
 
 

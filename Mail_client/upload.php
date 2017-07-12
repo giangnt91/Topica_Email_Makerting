@@ -42,15 +42,20 @@ if ($uploadOk == 0) {
         
         //rename file when upload
         $filename = $_FILES["fileToUpload"]["name"][$i];
+        //remove extension
+        $info = pathinfo($filename);
+        $name_no_ext = $info['filename'];
+
         $file_ext = substr($filename, strripos($filename, '.'));
-        $value = $_POST["auth"].$time;
+        $newtime = $_POST["time"];
+        $value = $_POST["auth"].$newtime;
         $newfilename = md5($value) . $file_ext;
 
         $tmpFilepath = $_FILES["fileToUpload"]["tmp_name"][$i];
         if($tmpFilepath != "")
         {
-            $newFilePath = $target_dir. $_FILES['fileToUpload']['name'][$i];
-            if(move_uploaded_file($tmpFilepath, $newFilePath . $newfilename));
+            $newFilePath = $target_dir . $name_no_ext;
+            if(move_uploaded_file($tmpFilepath, $newFilePath . "-" . $newfilename));
         }
     }
 }

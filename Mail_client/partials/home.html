@@ -1,125 +1,100 @@
-  <!-- Content Wrapper. Contains page content -->
-  <div class="content-wrapper" style="margin-left:0; min-height:595px">
-    <!-- Content Header (Page header) -->
-    <section class="content-header">
-      <h1>
-        Mailbox
-        <!--<small style="color:red">13 new messages</small>-->
-      </h1>
-       <ol class="breadcrumb">
-        <li><a href=""><i class="fa fa-user-o"></i> {{auth[0].username}}</a></li>
-        <li><a href="" ng-click="go_signature()"><i class="fa fa-user-o"></i> <b>signature </b> </a></li>
-        <li class="active"> <a href="#" ng-click="logout()"> log out! </a></li>
-      </ol>
-    </section>
-    <!-- Main content -->
-    <section class="content">
-      <div class="row">
-        <div ng-include=" 'partials/leftmenu.html' "></div>
-        <!-- /.col -->
-        <div class="col-md-10">
-          <div class="box box-primary">
-            <div class="box-header with-border">
-              <h3 class="box-title" ng-show="!AI">Inbox</h3>
-              <h3 class="box-title" ng-show="AI">Send</h3>
-              <div class="box-tools pull-right">
-                <div class="has-feedback">
-                  <input type="text" class="form-control input-sm" placeholder="Search Mail" ng-model="Search_Mail">
-                  <span class="glyphicon glyphicon-search form-control-feedback"></span>
-                </div>
+<!-- Content Wrapper. Contains page content -->
+<div class="wrapper" style="min-height:595px; box-shadow:none">
+  <!--background-color: #ecf0f5 !important;-->
+  <div ng-include=" 'partials/header.html' "></div>
+  <!-- Main content -->
+  <section class="content">
+    <div class="row">
+      <div ng-include=" 'partials/leftmenu.html' "></div>
+      <!-- /.col -->
+      <div class="col-md-10">
+        <div class="box box-primary" style="min-height:550px">
+          <div class="box-header with-border">
+            <h3 class="box-title" ng-show="!AI">Inbox</h3>
+            <h3 class="box-title" ng-show="AI">Send</h3>
+            <div class="box-tools pull-right">
+              <div class="has-feedback">
+                <input type="text" class="form-control input-sm" placeholder="Search Mail" ng-model="Search_Mail">
+                <span class="glyphicon glyphicon-search form-control-feedback"></span>
               </div>
-              <!-- /.box-tools -->
             </div>
-            <!-- /.box-header -->
-            <div class="box-body no-padding">
-              <div class="mailbox-controls">
-                <!-- Check all button -->
-                <!--<button type="button" class="btn btn-default btn-sm checkbox-toggle"><i class="fa fa-square-o"></i>
-                </button>-->
+            <!-- /.box-tools -->
+          </div>
+          <!-- /.box-header -->
+          <div class="box-body no-padding">
+            <div class="mailbox-controls">
+              <button type="button" class="btn btn-default btn-sm" ng-click="reloadData()"><i class="fa fa-refresh"></i></button>
+              <div class="pull-right">
+                <!--<a style="margin-right:10px">1-50 / {{results.length}}</a>-->
                 <div class="btn-group">
-                  <!--<button type="button" class="btn btn-default btn-sm"><i class="fa fa-trash-o"></i></button>-->
-                  <!--<button type="button" class="btn btn-default btn-sm"><i class="fa fa-reply"></i></button>
-                  <button type="button" class="btn btn-default btn-sm"><i class="fa fa-share"></i></button>-->
+                  <button type="button" class="btn btn-default btn-sm" ng-disabled="currentPage == 0" ng-click="currentPage=currentPage-1"><i class="fa fa-chevron-left"></i></button>
+                  <a style="float:left; margin-top:4px; margin-left:5px; margin-right:5px"> {{currentPage+1}}/{{numberOfPages()}} </a>
+                  <button type="button" class="btn btn-default btn-sm" ng-disabled="currentPage >= results.length/pageSize - 1" ng-click="currentPage=currentPage+1"><i class="fa fa-chevron-right"></i></button>
                 </div>
                 <!-- /.btn-group -->
-                <button type="button" class="btn btn-default btn-sm" ng-click="reloadData()"><i class="fa fa-refresh"></i></button>
-                <div class="pull-right">
-                  <!--<a style="margin-right:10px">1-50 / {{results.length}}</a>-->
-                  <div class="btn-group">
-                    <button type="button" class="btn btn-default btn-sm" ng-disabled="currentPage == 0" ng-click="currentPage=currentPage-1"><i class="fa fa-chevron-left"></i></button>
-                    <a style="float:left; margin-top:4px; margin-left:5px; margin-right:5px"> {{currentPage+1}}/{{numberOfPages()}} </a>
-                    <button type="button" class="btn btn-default btn-sm" ng-disabled="currentPage >= results.length/pageSize - 1" ng-click="currentPage=currentPage+1"><i class="fa fa-chevron-right"></i></button>
-                  </div>
-                  <!-- /.btn-group -->
-                </div>
-                <!-- /.pull-right -->
               </div>
-              <div class="table-responsive mailbox-messages">
-                <table class="table table-hover table-striped">
-                  <tbody>
-                    <tr class="Info" style="font-weight:bold; text-transform: uppercase;">
-                      <td> Author</td>
-                      <td> Title</td>
-                      <td> Attach</td>
-                      <td> Send Time</td>
-                      <td> Status</td>
-                    </tr>
-                  <tr ng-repeat="content in results | filter:Search_Mail | startFrom:currentPage*pageSize | limitTo:pageSize">
+              <!-- /.pull-right -->
+            </div>
+            <div class="table-responsive mailbox-messages">
+              <table class="table table-hover table-striped">
+                <tbody>
+                  <tr class="Info" style="font-weight:bold; text-transform: uppercase;">
+                    <td> Author</td>
+                    <td> Title</td>
+                    <td> Attach</td>
+                    <td> Send Time</td>
+                    <td> Status</td>
+                  </tr>
+                  <tr ng-repeat="content in results | filter:Search_Mail | startFrom:currentPage*pageSize | limitTo:pageSize" ng-click="readmailbyId(content._id)"
+                    style="cursor: pointer;">
                     <!--<td><input type="checkbox"></td>-->
                     <!--<td class="mailbox-star"><a href="#"><i class="fa fa-star text-yellow"></i></a></td>-->
-                    <td class="mailbox-name"><a style="cursor:pointer" ng-click="readmailbyId(content._id)">{{content.mail_Auth}}</a></td>
+                    <td class="mailbox-name"><a style="cursor:pointer">{{content.mail_Auth}}</a></td>
                     <td class="mailbox-subject"><b>{{content.mail_Title}}</b></td>
                     <td class="mailbox-attachment" ng-show="content.File.length > 0"><i class="fa fa-paperclip" aria-hidden="true"></i></td>
                     <td class="mailbox-attachment" ng-show="content.File == null"></td>
-                    <td class="mailbox-date" ng-bind="content.create_Time" ></td>
+                    <td class="mailbox-date" ng-bind="content.create_Time"></td>
                     <td style="color:green" ng-show="content.Status == true"> <i class="fa fa-check-square-o" aria-hidden="true" style="color:green; margin-right:3px"></i> Complete</td>
                     <td style="color:firebrick" ng-show="content.Status == false"> <i class="fa fa-clock-o" aria-hidden="true" style="color:firebrick; margin-right:3px"></i> Pending</td>
                   </tr>
-                  
-                  </tbody>
-                </table>
-                <!-- /.table -->
-              </div>
-              <!-- /.mail-box-messages -->
+
+                </tbody>
+              </table>
+              <!-- /.table -->
             </div>
-            <!-- /.box-body -->
-            <div class="box-footer no-padding">
-              <div class="mailbox-controls">
-                <div class="pull-left">
-                   <a style="margin-left:10px; font-size:17px; font-weight:600">1-50 / {{results.length}}</a>
-                </div>
-                <!-- Check all button -->
-                <!--<button type="button" class="btn btn-default btn-sm checkbox-toggle"><i class="fa fa-square-o"></i>
-                </button>-->
-                <!--<div class="btn-group">
-                  <button type="button" class="btn btn-default btn-sm"><i class="fa fa-trash-o"></i></button>
-                  <button type="button" class="btn btn-default btn-sm"><i class="fa fa-reply"></i></button>
-                  <button type="button" class="btn btn-default btn-sm"><i class="fa fa-share"></i></button>
-                </div>-->
-                <!-- /.btn-group -->
-                <!--<button type="button" class="btn btn-default btn-sm"><i class="fa fa-refresh"></i></button>-->
-                <div class="pull-right" style="margin-bottom:5px">
-                  <div class="btn-group">
-                    <button type="button" class="btn btn-default btn-sm" ng-disabled="currentPage == 0" ng-click="currentPage=currentPage-1"><i class="fa fa-chevron-left"></i></button>
-                    <a style="float:left; margin-top:4px; margin-left:5px; margin-right:5px"> {{currentPage+1}}/{{numberOfPages()}} </a>
-                    <button type="button" class="btn btn-default btn-sm" ng-disabled="currentPage >= results.length/pageSize - 1" ng-click="currentPage=currentPage+1"><i class="fa fa-chevron-right"></i></button>
-                  </div>
-                  <!-- /.btn-group -->
-                </div>
-                <!-- /.pull-right -->
+            <!-- /.mail-box-messages -->
+          </div>
+          <!-- /.box-body -->
+          <div class="box-footer no-padding">
+            <div class="mailbox-controls">
+              <div class="pull-left">
+                <a style="margin-left:10px; font-size:17px; font-weight:600">1-50 / {{results.length}}</a>
               </div>
+              <!-- Check all button -->
+              <!--<button type="button" class="btn btn-default btn-sm"><i class="fa fa-refresh"></i></button>-->
+              <div class="pull-right" style="margin-bottom:5px">
+                <div class="btn-group">
+                  <button type="button" class="btn btn-default btn-sm" ng-disabled="currentPage == 0" ng-click="currentPage=currentPage-1"><i class="fa fa-chevron-left"></i></button>
+                  <a style="float:left; margin-top:4px; margin-left:5px; margin-right:5px"> {{currentPage+1}}/{{numberOfPages()}} </a>
+                  <button type="button" class="btn btn-default btn-sm" ng-disabled="currentPage >= results.length/pageSize - 1" ng-click="currentPage=currentPage+1"><i class="fa fa-chevron-right"></i></button>
+                </div>
+                <!-- /.btn-group -->
+              </div>
+              <!-- /.pull-right -->
             </div>
           </div>
-          <!-- /. box -->
+
         </div>
-        <!-- /.col -->
+        <!-- /. box -->
       </div>
-      <!-- /.row -->
-    </section>
-    <!-- /.content -->
-  </div>
-  <!-- /.content-wrapper -->
- <div ng-include=" 'partials/footer.html' "></div>
+      <!-- /.col -->
+    </div>
+    <!-- /.row -->
+  </section>
+  <!-- /.content -->
+</div>
+
+<!-- /.content-wrapper -->
+<div ng-include=" 'partials/footer.html' "></div>
 </div>
 <!-- ./wrapper -->
-

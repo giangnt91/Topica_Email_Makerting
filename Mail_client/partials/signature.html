@@ -1,26 +1,18 @@
 <!-- Content Wrapper. Contains page content -->
-<div class="content-wrapper" style="margin-left:0">
+<div class="wrapper" style="box-shadow: none">
     <!-- Content Header (Page header) -->
-    <section class="content-header">
-        <h1>
-            Mailbox
-        </h1>
-        <ol class="breadcrumb">
-            <li><a href=""><i class="fa fa-user-o"></i> {{auth[0].username}}</a></li>
-            <li class="active"> <a href="#" ng-click="logout()"> log out! </a></li>
-        </ol>
-    </section>
+    <div ng-include=" 'partials/header.html' "></div>
 
     <!-- Main content -->
     <section class="content">
         <div class="row">
             <div ng-include=" 'partials/leftmenu.html' "></div>
             <!-- /.col -->
-            <div class="col-md-10" style="margin-bottom:210px">
-                <div class="box box-primary">
+            <div class="col-md-10">
+                <div class="box box-primary" style="margin-bottom:0; min-height: 550px">
                     <div class="box-header with-border">
                         <!--<h3 class="box-title" ng-src="!_edit">Signature</h3>-->
-                        <h3 class="box-title">Edit Signature</h3>
+                        <h3 class="box-title" style="font-weight:600; color: #821018">SIGNATURE</h3>
                     </div>
                     <!-- /.box-header -->
                     <div class="box-body">
@@ -36,10 +28,10 @@
                 <!-- /.box-body -->
                 <div class="box-footer">
                     <div class="pull-right">
+                        <button type="reset" class="btn btn-default" ng-click="_backcompose()" style="margin-right:10px"><i class="fa fa-times"></i> Discard</button>
                         <!--<button type="button" class="btn btn-primary" ng-show="!_edit" ng-click="edit()"><i class="fa fa-pencil"></i> Edit</button>-->
-                        <button type="submit" class="btn btn-primary" ng-click="save()"><i class="fa fa-envelope-o"></i> Save</button>
+                        <button type="submit" class="btn btn-primary" ng-click="save()" style="background: #821018; border: none"><i class="fa fa-envelope-o"></i> Save</button>
                     </div>
-                    <button type="reset" class="btn btn-default" ng-click="_backcompose()"><i class="fa fa-times"></i> Discard</button>
                 </div>
                 <!-- /.box-footer -->
             </div>
