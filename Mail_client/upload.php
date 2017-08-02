@@ -23,7 +23,7 @@ $uploadOk = 1;
 //     $uploadOk = 0;
 // }
 //Check file size
-// if ($_FILES["fileToUpload"]["size"] > 5242880) {
+// if ($_FILES["fileToUpload"]["size"] > 10485760) {
 //     echo "Sorry, your file is too large.";
 //     $uploadOk = 0;
 // }
@@ -52,8 +52,11 @@ if ($uploadOk == 0) {
         $newfilename = md5($value) . $file_ext;
 
         $tmpFilepath = $_FILES["fileToUpload"]["tmp_name"][$i];
+        // echo phpinfo();
+
         if($tmpFilepath != "")
         {
+            // echo "upload";
             $newFilePath = $target_dir . $name_no_ext;
             if(move_uploaded_file($tmpFilepath, $newFilePath . "-" . $newfilename));
         }

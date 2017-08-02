@@ -93,18 +93,23 @@ angular.module('Mail.controller', ['ngRoute', 'angular.filter', 'angularSpectrum
 
         $scope.paste = function (event) {
             event.preventDefault();
-            $scope._group_email = event.originalEvent.clipboardData.getData('text/plain').split(',');
+            var tmp_paste_groups = event.originalEvent.clipboardData.getData('text/plain').replace(/(\r\n|\n|\r)/gm,',');
+            var tmp_paste_groups_2 = tmp_paste_groups.slice(0,-1);
+            $scope._group_email = tmp_paste_groups_2.split(',');
         }
 
         $scope.paste_detail = function (event) {
             event.preventDefault();
             var tmp = $scope.detail_mails;
-            var tmp_paste = event.originalEvent.clipboardData.getData('text/plain').split(',');
+            var tmp_paste = event.originalEvent.clipboardData.getData('text/plain').replace(/(\r\n|\n|\r)/gm,',');
+            var tmp_paste_2 = tmp_paste.slice(0,-1);
+            var tmp_paste_3 = tmp_paste_2.split(',');
+            
             
             for(var i=0; i<tmp.length; i++){
-                tmp_paste.push(tmp[i].text);
+                tmp_paste_3.push(tmp[i].text);
             }
-            $scope.detail_mails = tmp_paste;
+            $scope.detail_mails = tmp_paste_3;
         }
 
         //get groups from server
@@ -118,7 +123,7 @@ angular.module('Mail.controller', ['ngRoute', 'angular.filter', 'angularSpectrum
 
         $scope.back = function () {
             $scope._detail = false;
-            $scope._group_update_name
+            $scope._group_update_name = '';
         }
 
         // create new groups
@@ -201,6 +206,7 @@ angular.module('Mail.controller', ['ngRoute', 'angular.filter', 'angularSpectrum
                             showClose: true,
                         });
                         get_all_groups();
+                        $scope._detail = false;
                     } else {
                         ngDialog.open({
                             template: '<h2 style="margin-top:10px"><center>' + response.data.message + '</center></h2>',
